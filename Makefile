@@ -1,6 +1,6 @@
 include build_scripts/config.mk
 
-.PHONY: all disk_image bootloader run always clean
+.PHONY: all disk_image bootloader kernel run always clean
 
 all: disk_image
 
@@ -11,7 +11,7 @@ include build_scripts/toolchain.mk
 #
 disk_image: $(BUILD_DIR)/disk_image.raw
 
-$(BUILD_DIR)/disk_image.raw: bootloader
+$(BUILD_DIR)/disk_image.raw: bootloader kernel
 	@./build_scripts/make_disk.sh $@ $(MAKE_DISK_SIZE)
 	@echo "--> Created: " $@
 
@@ -31,6 +31,12 @@ stage1: always
 #
 stage2: always
 	@$(MAKE) -C $(PROJECT_DIR)/src/bootloader/stage2
+
+#
+# Kernel
+#
+kernel: always
+	@$(MAKE) -C $(PROJECT_DIR)/src/kernel
 
 #
 # Run

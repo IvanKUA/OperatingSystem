@@ -25,6 +25,9 @@ dd if=${BUILD_DIR}/stage1.bin of=$TARGET conv=notrunc bs=1 count=3 2>&1 >/dev/nu
 dd if=${BUILD_DIR}/stage1.bin of=$TARGET conv=notrunc bs=1 seek=90 skip=90 2>&1 >/dev/null
 dd if=${BUILD_DIR}/stage2.bin of=$TARGET conv=notrunc bs=512 seek=1 #>/dev/null
 
+# install kernel
+mcopy -i $TARGET -s ${BUILD_DIR}/kernel.sys ::/
+
 # write lba address of stage2 to bootloader
 echo "01 00 00 00" | xxd -r -p | dd of=$TARGET conv=notrunc bs=1 seek=$STAGE1_STAGE2_LOCATION_OFFSET
 perl -e 'print pack("V", shift)' ${STAGE2_SECTORS} | dd of=$TARGET conv=notrunc bs=1 seek=$(( STAGE1_STAGE2_LOCATION_OFFSET + 4 ))
