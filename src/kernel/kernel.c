@@ -1,5 +1,6 @@
 #include "kernel.h"
 #include <hal/hal.h>
+#include <vfs/vfs.h>
 #include <arch/i686/vga.h>
 #include <mem/memory.h>
 #include <mem/malloc.h>
@@ -11,6 +12,7 @@ void init_kernel()
     VGA_clrscr();
     init_heap();
     HAL_Init();
+    VFS_Init();
 }
 
 void init_heap()

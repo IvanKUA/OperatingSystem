@@ -18,7 +18,8 @@ typedef struct VFS
     int mountCount;
 } VFS_T;
 
-VFS_T* VFS_Init(void);
+void VFS_Init();
+VFS_T* VFS_Get();
 int VFS_Mount(VFS_T* vfs, const char* label, VNode_T* root);
 VNode_T* VFS_Lookup(VFS_T* vfs, const char* path);
 int VFS_AddChild(VNode_T* parent, VNode_T* child);

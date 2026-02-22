@@ -4,12 +4,30 @@
 
 #define PATH_MAX_LEN 256
 
-VFS_T* VFS_Init(void)
+static VFS_T* vfs;
+
+VNode_T* stdoutNode;
+
+int Stdout_Write(struct VNode* node, const uint8_t* buf, int size, int offset);
+
+void VFS_Init()
 {
-    VFS_T* vfs = (VFS_T*)kmalloc(sizeof(VFS_T));
+    vfs = (VFS_T*)kmalloc(sizeof(VFS_T));
     if (!vfs) return NULL;
 
     vfs->mountCount = 0;
+
+    VNode_T* root = VNode_Create("/", VNODE_TYPE_DIR);
+
+    stdoutNode = VNode_Create("stdout", VNODE_TYPE_FILE);
+    stdoutNode->write = Stdout_Write;
+
+    VFS_AddChild(root, stdoutNode);
+    VFS_Mount(vfs, "", root);
+}
+
+VFS_T* VFS_Get()
+{
     return vfs;
 }
 
@@ -103,4 +121,14 @@ VNode_T* VFS_Lookup(VFS_T* vfs, const char* path)
     }
 
     return current;
+}
+
+int Stdout_Write(struct VNode* node, const uint8_t* buf, int size, int offset)
+{
+    for (int i = 0; i < size; i++)
+    {
+        VGA_putc(buf[i]);
+    }
+
+    return size;
 }
